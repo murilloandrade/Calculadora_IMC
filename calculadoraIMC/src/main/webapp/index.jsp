@@ -1,18 +1,20 @@
 <!DOCTYPE html>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.text.DecimalFormat;" %>
 <html>
-  <head>
-    <meta charset="utf-8">
+    <head>
+    <title>Calculadora de IMC</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Exemplo JSP (Java Server Pages) - Maior Menor</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-  </head>
-  <body>
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="panel-heading">
-              <h3 class="panel-title">De menor ou De maior?</h3>
-            </div>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    </head>
+    <body>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="panel-heading">
+                <h3 class="panel-title">Calculadora de IMC</h3>
+                </div>
             <div class="panel-body">
             <form>
                 <fieldset>
@@ -67,22 +69,51 @@
     </div>
     <!-- Scriptlet. Codigo Java no HTML. -->
     <%
+      DecimalFormat df = new DecimalFormat("0.0");
       String idadeStr = request.getParameter("idade");
-      if (idadeStr != null) {
+      String pesoStr = request.getParameter("peso");
+      String alturaStr = request.getParameter("altura");
+      String sexo = request.getParameter("sexo");
+      String atividadeFisica = request.getParameter("atividade");
+      if (idadeStr != null && pesoStr != null && alturaStr != null && sexo != null && atividadeFisica != null) {
          int idade = Integer.parseInt(idadeStr);
+         int peso = Integer.parseInt(pesoStr);
+         float altura = Float.parseFloat(alturaStr);
+         float imc = peso / (altura * altura);
     %>
     <br>
     <%
-        if (idade >= 18) {
+        if (imc < 14.5) {
     %>
     <p>
-      De maior! :)
+      :( Seu IMC é <%= df.format(imc) %>. Isso indica que você está abaixo do peso ideal. É recomendado iniciar uma dieta focada em ganho de peso.
     </p>
     <% 
-        } else {
+        } else 
+        if (imc < 18.2) {
     %>
     <p>
-      De menor! :)
+      :) Seu IMC é <%= df.format(imc) %>. Isso indica que você está no peso ideal para a sua altura! Mas é sempre bom manter-se cuidadoso com a sua saúde, então não deixe de ter uma dieta equilibrada e nutritiva!
+    </p>
+    <% 
+        } else 
+        if (imc < 19.6) {
+    %>
+    <p>
+      :o Seu IMC é <%= df.format(imc) %>. Isso indica que você pode estar com sobrepeso. É recomendado que você seja mais atencioso com o valor calórico da sua dieta e inicie algum tipo de exercício físico. 
+    </p>
+    <% 
+        } else
+        if (imc >= 19.6 && atividadeFisica != "intensa") {
+    %>
+    <p>
+      :( Seu IMC é <%= imc %>. Isso indica que você pode estar com obesidade. É recomendado que você inicie uma dieta de perda de peso e inicie uma rotina mais ativa com bastante exercícios físicos.
+    </p>
+    <% 
+        } else
+    %>
+    <p>
+      :o Seu IMC é <%= imc %>. Isso indica que você pode estar com obesidade, mas como você pratica muita atividade física, o seu peso pode ser devido aos músculos, o que é uma coisa boa. Para confirmar isso, o ideal é que você procure o nutricionista ou o médico para avaliar sua composição corporal.
     </p>
     <%
         }
